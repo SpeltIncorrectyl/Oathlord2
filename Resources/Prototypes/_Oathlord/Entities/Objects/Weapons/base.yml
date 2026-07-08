@@ -10,5 +10,5 @@
     targetUser: true
     effects:
     - !type:ModifyStatusEffect
-        effectProto: OathStatusEffectStagger
+        effectProto: OathStatusEffectSlowdown
         time: 2

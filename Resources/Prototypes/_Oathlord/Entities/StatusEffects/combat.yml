@@ -1,7 +1,7 @@
 - type: entity
   parent: StatusEffectSpeed
-  id: OathStatusEffectStagger
-  name: staggered
+  id: OathStatusEffectSlowdown
+  name: slowdown
   components:
   - type: MovementModStatusEffect
     sprintSpeedModifier: 0.6
