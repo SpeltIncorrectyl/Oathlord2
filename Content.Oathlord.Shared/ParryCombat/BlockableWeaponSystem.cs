@@ -3,6 +3,9 @@ using Content.Shared.Verbs;
 using Content.Shared.Popups;
 using Content.Shared.Wieldable.Components;
 using Content.Shared.Weapons.Melee.Events;
+using Content.Shared.Interaction.Events;
+using Content.Shared.Hands;
+using Content.Shared.Wieldable;
 
 namespace Content.Oathlord.Shared.ParryCombat;
 
@@ -15,9 +18,12 @@ public sealed partial class BlockableWeaponSystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<BlockableWeaponComponent, GetVerbsEvent<InteractionVerb>>(OnGetVerbs);
         SubscribeLocalEvent<BlockableWeaponRequiresWieldComponent, AttemptStartBlockingEvent>(OnAttemptWieldBlocking);
         SubscribeLocalEvent<BlockableWeaponComponent, AttemptMeleeEvent>(OnAttemptMelee);
+        SubscribeLocalEvent<BlockableWeaponComponent, UseInHandEvent>(OnUseInHand);
+        SubscribeLocalEvent<BlockableWeaponRequiresWieldComponent, ItemUnwieldedEvent>(OnItemUnwielded);
+        SubscribeLocalEvent<BlockableWeaponComponent, GotUnequippedHandEvent>(OnDropped);
+        SubscribeLocalEvent<BlockableWeaponComponent, HandDeselectedEvent>(OnHandDeselected);
     }
 
     /// <summary>
@@ -41,6 +47,9 @@ public sealed partial class BlockableWeaponSystem : EntitySystem
     /// </summary>
     public void StartBlocking(EntityUid user, Entity<BlockableWeaponComponent> weapon)
     {
+        if (weapon.Comp.Blocking)
+            return;
+
         weapon.Comp.Blocking = true;
         Dirty(weapon);
     }
@@ -64,36 +73,11 @@ public sealed partial class BlockableWeaponSystem : EntitySystem
     /// </summary>
     public void StopBlocking(EntityUid user, Entity<BlockableWeaponComponent> weapon)
     {
+        if (!weapon.Comp.Blocking)
+            return;
+
         weapon.Comp.Blocking = false;
         Dirty(weapon);
-    }
-
-    private void OnGetVerbs(Entity<BlockableWeaponComponent> entity, ref GetVerbsEvent<InteractionVerb> args)
-    {
-        if (args.Hands is null || !args.CanAccess || !args.CanInteract)
-            return;
-
-        if (!CanBlock(args.User, entity))
-            return;
-
-        var user = args.User;
-        if (!entity.Comp.Blocking)
-        {
-            args.Verbs.Add(new InteractionVerb()
-            {
-                Text = Loc.GetString("blockable-weapon-verb-block"),
-                Act = () => TryStartBlocking(user, entity),
-                Priority = 1 // above unwield verb
-            });
-        } else
-        {
-           args.Verbs.Add(new InteractionVerb()
-            {
-                Text = Loc.GetString("blockable-weapon-verb-stop-block"),
-                Act = () => StopBlocking(user, entity),
-                Priority = 1 // above unwield verb
-            }); 
-        }
     }
 
     private void OnAttemptWieldBlocking(Entity<BlockableWeaponRequiresWieldComponent> entity, ref AttemptStartBlockingEvent args)
@@ -116,6 +100,46 @@ public sealed partial class BlockableWeaponSystem : EntitySystem
             args.Message = Loc.GetString("blockable-weapon-popup-cannot-attack");
             args.Cancelled = true;
         }
+    }
+
+    private void OnUseInHand(Entity<BlockableWeaponComponent> entity, ref UseInHandEvent args)
+    {
+        if (args.Handled)
+            return;
+
+        if (!entity.Comp.Blocking) {
+            if (TryStartBlocking(args.User, entity))
+            {
+                args.Handled = true;
+            }
+        }
+        else
+        {
+            StopBlocking(args.User, entity);
+            args.Handled = true;
+        }
+    }
+
+    private void OnItemUnwielded(Entity<BlockableWeaponRequiresWieldComponent> entity, ref ItemUnwieldedEvent args)
+    {
+        if (!TryComp<BlockableWeaponComponent>(entity.Owner, out var blockable))
+        {
+            Log.Warning($"Entity {entity.Owner} has BlockableWeaponRequiresWieldComponent but not BlockableWeaponComponent.");
+            return;
+        }
+
+        StopBlocking(args.User, (entity.Owner, blockable));
+    }
+
+    private void OnDropped(Entity<BlockableWeaponComponent> entity, ref GotUnequippedHandEvent args)
+    {
+        if (entity.Owner == args.Unequipped)
+            StopBlocking(args.User, entity);
+    }
+
+    private void OnHandDeselected(Entity<BlockableWeaponComponent> entity, ref HandDeselectedEvent args)
+    {
+        StopBlocking(args.User, entity);
     }
 }
 
