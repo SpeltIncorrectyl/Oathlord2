@@ -1,0 +1,5 @@
+- type: entity
+  id: OathBaseBlocking
+  abstract: true
+  components:
+  - type: BlockableWeapon

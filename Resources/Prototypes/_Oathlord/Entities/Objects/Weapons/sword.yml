@@ -1,5 +1,5 @@
 - type: entity
-  parent: OathBaseWeapon
+  parent: [ OathBaseBlocking, OathBaseWeapon ]
   id: OathWeaponSword
   categories: [ ForkFiltered ]
   name: Sword
@@ -8,7 +8,6 @@
   - type: Item
     size: Ginormous
   - type: Sharp
-  - type: BlockableWeapon
   - type: MeleeWeapon
     wideAnimationRotation: -135
     attackRate: 1.5

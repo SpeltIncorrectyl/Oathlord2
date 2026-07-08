@@ -228,3 +228,8 @@
   - type: FireVisuals
     alternateState: Standing
   - type: StunVisuals
+  # <Oathlord>
+  - type: BlockingVisuals
+    sprite: Effects/blocking.rsi
+    state: icon
+  # </Oathlord>

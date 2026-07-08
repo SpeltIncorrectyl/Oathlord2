@@ -6,6 +6,8 @@ using Content.Shared.Weapons.Melee.Events;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Hands;
 using Content.Shared.Wieldable;
+using Robust.Shared.GameObjects;
+using Robust.Shared.Serialization;
 
 namespace Content.Oathlord.Shared.ParryCombat;
 
@@ -13,6 +15,7 @@ public sealed partial class BlockableWeaponSystem : EntitySystem
 {
     [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private SharedAppearanceSystem _appearance = default!;
 
     public override void Initialize()
     {
@@ -51,6 +54,7 @@ public sealed partial class BlockableWeaponSystem : EntitySystem
             return;
 
         weapon.Comp.Blocking = true;
+        _appearance.SetData(user, BlockingVisuals.Shield, true);
         Dirty(weapon);
     }
 
@@ -77,6 +81,7 @@ public sealed partial class BlockableWeaponSystem : EntitySystem
             return;
 
         weapon.Comp.Blocking = false;
+        _appearance.SetData(user, BlockingVisuals.Shield, false);
         Dirty(weapon);
     }
 
@@ -148,3 +153,9 @@ public sealed partial class BlockableWeaponSystem : EntitySystem
 /// </summary>
 [ByRefEvent]
 public record struct AttemptStartBlockingEvent(EntityUid User, bool Cancelled = false);
+
+[Serializable, NetSerializable, Flags]
+public enum BlockingVisuals 
+{
+    Shield
+}
