@@ -1,4 +1,5 @@
 using Content.Shared.Wieldable.Components;
+using Content.Shared.Examine;
 
 namespace Content.Oathlord.Shared.ParryCombat.Range;
 
@@ -13,6 +14,8 @@ public sealed class RangeSystem : EntitySystem
         
         SubscribeLocalEvent<InnateRangeComponent, GetRangeEvent>(OnGetRangeInnate);
         SubscribeLocalEvent<RangeOnWieldComponent, GetRangeEvent>(OnGetRangeWielded);
+        SubscribeLocalEvent<InnateRangeComponent, ExaminedEvent>(OnExaminedInnate);
+        SubscribeLocalEvent<RangeOnWieldComponent, ExaminedEvent>(OnExaminedWielded);
     }
 
     /// <summary>
@@ -54,6 +57,24 @@ public sealed class RangeSystem : EntitySystem
         
         if (wieldable.Wielded)
             args.Range = ent.Comp.WieldedRange;
+    }
+
+    private void OnExaminedInnate(Entity<InnateRangeComponent> ent, ref ExaminedEvent args)
+    {
+        if (ent.Comp.HideExamine)
+            return;
+        
+        args.PushMarkup(Loc.GetString("range-examine-innate", ("range", ent.Comp.Range)));
+    }
+
+    private void OnExaminedWielded(Entity<RangeOnWieldComponent> ent, ref ExaminedEvent args)
+    {
+        if (ent.Comp.HideExamine)
+            return;
+        
+        args.PushMarkup(Loc.GetString("range-examine-wielded", ("range", ent.Comp.WieldedRange)));
+        if (ent.Comp.UnwieldedRange > 0f)
+            args.PushMarkup(Loc.GetString("range-examine-unwielded", ("range", ent.Comp.WieldedRange)));
     }
 }
 
