@@ -1,0 +1,6 @@
+- type: entity
+  parent: BaseItem
+  id: OathBaseWeapon
+  abstract: true
+  components:
+  - type: RespectRange

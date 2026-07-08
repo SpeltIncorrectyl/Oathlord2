@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseItem
+  parent: OathBaseWeapon
   id: OathWeaponDagger
   categories: [ ForkFiltered ]
   name: Dagger

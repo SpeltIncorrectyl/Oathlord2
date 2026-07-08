@@ -156,6 +156,9 @@
   id: MobCombat
   abstract: true
   components:
+  # <Oathlord>
+  - type: RespectRange
+  # </Oathlord>
   - type: CombatMode
   - type: MeleeWeapon
     hidden: true
