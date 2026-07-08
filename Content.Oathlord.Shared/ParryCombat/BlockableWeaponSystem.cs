@@ -1,0 +1,126 @@
+using Content.Shared.Hands.EntitySystems;
+using Content.Shared.Verbs;
+using Content.Shared.Popups;
+using Content.Shared.Wieldable.Components;
+using Content.Shared.Weapons.Melee.Events;
+
+namespace Content.Oathlord.Shared.ParryCombat;
+
+public sealed partial class BlockableWeaponSystem : EntitySystem
+{
+    [Dependency] private SharedHandsSystem _hands = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+
+    public override void Initialize()
+    {
+        base.Initialize();
+
+        SubscribeLocalEvent<BlockableWeaponComponent, GetVerbsEvent<InteractionVerb>>(OnGetVerbs);
+        SubscribeLocalEvent<BlockableWeaponRequiresWieldComponent, AttemptStartBlockingEvent>(OnAttemptWieldBlocking);
+        SubscribeLocalEvent<BlockableWeaponComponent, AttemptMeleeEvent>(OnAttemptMelee);
+    }
+
+    /// <summary>
+    /// Can the user use this weapon to block?
+    /// </summary>
+    public bool CanBlock(EntityUid user, Entity<BlockableWeaponComponent> weapon)
+    {
+        if (!_hands.IsHolding(user, weapon.Owner))
+            return false;
+        
+        var ev = new AttemptStartBlockingEvent(user);
+        RaiseLocalEvent(weapon.Owner, ref ev);
+        if (ev.Cancelled)
+            return false;
+        
+        return true;
+    }
+
+    /// <summary>
+    /// Start blocking with this weapon.
+    /// </summary>
+    public void StartBlocking(EntityUid user, Entity<BlockableWeaponComponent> weapon)
+    {
+        weapon.Comp.Blocking = true;
+        Dirty(weapon);
+    }
+
+    /// <summary>
+    /// Try to start blocking with this weapon.
+    /// Checks <see cref=CanBlock/>.
+    /// Returns true if successful.
+    /// </summary>
+    public bool TryStartBlocking(EntityUid user, Entity<BlockableWeaponComponent> weapon)
+    {
+        if (!CanBlock(user, weapon))
+            return false;
+        
+        StartBlocking(user, weapon);
+        return true;
+    }
+
+    /// <summary>
+    /// Stop blocking with this weapon.
+    /// </summary>
+    public void StopBlocking(EntityUid user, Entity<BlockableWeaponComponent> weapon)
+    {
+        weapon.Comp.Blocking = false;
+        Dirty(weapon);
+    }
+
+    private void OnGetVerbs(Entity<BlockableWeaponComponent> entity, ref GetVerbsEvent<InteractionVerb> args)
+    {
+        if (args.Hands is null || !args.CanAccess || !args.CanInteract)
+            return;
+
+        if (!CanBlock(args.User, entity))
+            return;
+
+        var user = args.User;
+        if (!entity.Comp.Blocking)
+        {
+            args.Verbs.Add(new InteractionVerb()
+            {
+                Text = Loc.GetString("blockable-weapon-verb-block"),
+                Act = () => TryStartBlocking(user, entity),
+                Priority = 1 // above unwield verb
+            });
+        } else
+        {
+           args.Verbs.Add(new InteractionVerb()
+            {
+                Text = Loc.GetString("blockable-weapon-verb-stop-block"),
+                Act = () => StopBlocking(user, entity),
+                Priority = 1 // above unwield verb
+            }); 
+        }
+    }
+
+    private void OnAttemptWieldBlocking(Entity<BlockableWeaponRequiresWieldComponent> entity, ref AttemptStartBlockingEvent args)
+    {
+        if (!TryComp<WieldableComponent>(entity.Owner, out var wieldable))
+        {
+            Log.Warning($"Entity {entity.Owner} has BlockableWeaponRequiresWieldComponent but not WieldableComponent.");
+            args.Cancelled = true;
+            return;
+        }
+
+        if (!wieldable.Wielded)
+            args.Cancelled = true;
+    }
+
+    private void OnAttemptMelee(Entity<BlockableWeaponComponent> entity, ref AttemptMeleeEvent args)
+    {
+        if (entity.Comp.Blocking)
+        {
+            args.Message = Loc.GetString("blockable-weapon-popup-cannot-attack");
+            args.Cancelled = true;
+        }
+    }
+}
+
+/// <summary>
+/// Raised on a weapon when someone attempts to start blocking with it.
+/// </summary>
+[ByRefEvent]
+public record struct AttemptStartBlockingEvent(EntityUid User, bool Cancelled = false);
