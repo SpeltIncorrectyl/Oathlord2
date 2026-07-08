@@ -1,0 +1,5 @@
+- type: entity
+  parent: MobHuman
+  id: OathMobHuman
+  categories: [ ForkFiltered ]
+  name: Urist McPeasant

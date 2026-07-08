@@ -1,0 +1,26 @@
+- type: entity
+  parent: BaseItem
+  id: OathWeaponDagger
+  categories: [ ForkFiltered ]
+  name: Dagger
+  description: A very short blade for close-quarters confrontations.
+  components:
+  - type: Item
+    size: Small
+    storedSprite:
+      sprite: Objects/Weapons/Melee/combat_knife.rsi
+      state: storage
+  - type: Sharp
+  - type: MeleeWeapon
+    wideAnimation: WeaponArcThrust
+    wideAnimationRotation: -135
+    attackRate: 5
+    autoAttack: true
+    damage:
+      types:
+        Slash: 5
+    soundHit:
+      path: /Audio/Weapons/bladeslice.ogg
+  - type: Sprite
+    sprite: Objects/Weapons/Melee/combat_knife.rsi
+    state: icon
