@@ -1,0 +1,23 @@
+- type: entity
+  parent: OathBaseWeapon
+  id: OathWeaponSword
+  categories: [ ForkFiltered ]
+  name: Sword
+  description: A short bladed weapon.
+  components:
+  - type: Item
+    size: Ginormous
+  - type: Sharp
+  - type: MeleeWeapon
+    wideAnimationRotation: -135
+    attackRate: 1.5
+    autoAttack: true
+    damage:
+      types:
+        Slash: 20
+  - type: Sprite
+    state: icon
+    sprite: Objects/Weapons/Melee/claymore.rsi
+  - type: UseDelay
+  - type: Wieldable
+  - type: MeleeRequiresWield

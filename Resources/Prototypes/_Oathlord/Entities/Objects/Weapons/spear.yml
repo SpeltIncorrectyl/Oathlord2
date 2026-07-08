@@ -1,0 +1,22 @@
+- type: entity
+  parent: OathBaseWeapon
+  id: OathWeaponSpear
+  categories: [ ForkFiltered ]
+  name: Spear
+  description: A long weapon with a deadly point. Can keep enemies at bay, but not forever.
+  components:
+  - type: Item
+    size: Ginormous
+  - type: MeleeWeapon
+    wideAnimation: WeaponArcThrust
+    wideAnimationRotation: -135
+    autoAttack: true
+    damage:
+      types:
+        Piercing: 20
+  - type: Sprite
+    sprite: Objects/Weapons/Melee/spear.rsi
+    state: spear
+  - type: UseDelay
+  - type: Wieldable
+  - type: MeleeRequiresWield
