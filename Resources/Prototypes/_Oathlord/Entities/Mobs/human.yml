@@ -1,0 +1,22 @@
+- type: entity
+  parent: MobHuman
+  id: OathMobHuman
+  categories: [ ForkFiltered ]
+  name: Urist McPeasant
+
+- type: entity
+  parent: OathMobHuman
+  id: OathMobCombatHuman
+  categories: [ ForkFiltered ]
+  name: Urist McRuffian
+  components:
+  - type: NpcFactionMember
+    factions:
+    - SimpleNeutral
+  - type: HTN
+    rootTask:
+      task: MeleeCombatCompound
+    blackboard:
+      NavInteract: !type:Bool
+        true
+  - type: NPCRetaliation
