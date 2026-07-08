@@ -12,6 +12,7 @@
       state: storage
   - type: Sharp
   - type: MeleeWeapon
+    range: 0.5
     wideAnimation: WeaponArcThrust
     wideAnimationRotation: -135
     attackRate: 5

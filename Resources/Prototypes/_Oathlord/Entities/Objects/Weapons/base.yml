@@ -2,3 +2,13 @@
   parent: BaseItem
   id: OathBaseWeapon
   abstract: true
+  components:
+  - type: TriggerOnMeleeHit
+    triggerEveryHit: true
+    targetIsUser: true
+  - type: EntityEffectOnTrigger
+    targetUser: true
+    effects:
+    - !type:ModifyStatusEffect
+        effectProto: OathStatusEffectStagger
+        time: 2

@@ -8,6 +8,7 @@
   - type: Item
     size: Ginormous
   - type: MeleeWeapon
+    range: 2.5
     wideAnimation: WeaponArcThrust
     wideAnimationRotation: -135
     autoAttack: true
