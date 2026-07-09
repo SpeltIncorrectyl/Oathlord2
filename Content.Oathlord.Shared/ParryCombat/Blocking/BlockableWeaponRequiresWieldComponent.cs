@@ -1,4 +1,4 @@
-namespace Content.Oathlord.Shared.ParryCombat;
+namespace Content.Oathlord.Shared.ParryCombat.Blocking;
 
 /// <summary>
 /// The weapon needs to be wielded before it can be used to block.

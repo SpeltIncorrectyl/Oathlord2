@@ -9,7 +9,7 @@ using Content.Shared.Wieldable;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Serialization;
 
-namespace Content.Oathlord.Shared.ParryCombat;
+namespace Content.Oathlord.Shared.ParryCombat.Blocking;
 
 public sealed partial class BlockableWeaponSystem : EntitySystem
 {

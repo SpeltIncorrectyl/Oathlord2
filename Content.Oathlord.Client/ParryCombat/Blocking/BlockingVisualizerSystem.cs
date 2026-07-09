@@ -1,7 +1,7 @@
 using Robust.Client.GameObjects;
-using Content.Oathlord.Shared.ParryCombat;
+using Content.Oathlord.Shared.ParryCombat.Blocking;
 
-namespace Content.Oathlord.Client.ParryCombat;
+namespace Content.Oathlord.Client.ParryCombat.Blocking;
 
 /// <summary>
 /// Configures the sprite layers for mobs which can block with weapons.

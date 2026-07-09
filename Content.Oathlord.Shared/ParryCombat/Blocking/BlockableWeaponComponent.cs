@@ -1,6 +1,6 @@
 using Robust.Shared.GameStates;
 
-namespace Content.Oathlord.Shared.ParryCombat;
+namespace Content.Oathlord.Shared.ParryCombat.Blocking;
 
 /// <summary>
 /// On a weapon which someone can use to block.
