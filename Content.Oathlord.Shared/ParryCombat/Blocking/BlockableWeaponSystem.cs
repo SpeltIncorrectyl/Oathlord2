@@ -8,6 +8,7 @@ using Content.Shared.Hands;
 using Content.Shared.Wieldable;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Serialization;
+using Content.Shared.EntityEffects;
 
 namespace Content.Oathlord.Shared.ParryCombat.Blocking;
 
@@ -16,6 +17,7 @@ public sealed partial class BlockableWeaponSystem : EntitySystem
     [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private SharedAppearanceSystem _appearance = default!;
+    [Dependency] private SharedEntityEffectsSystem _effects = default!;
 
     public override void Initialize()
     {

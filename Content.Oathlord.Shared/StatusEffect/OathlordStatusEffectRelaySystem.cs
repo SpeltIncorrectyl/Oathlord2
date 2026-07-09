@@ -13,7 +13,7 @@ public sealed partial class OathlordStatusEffectRelaySystem : EntitySystem
         SubscribeLocalEvent<StatusEffectContainerComponent, AttemptMeleeEvent>(RelayEvent);
     }
 
-    private void RelayEvent<T>(Entity<StatusEffectContainerComponent> entity, ref T args) where T : struct
+    private void RelayEvent<T>(Entity<StatusEffectContainerComponent> entity, ref T args)
     {
         var ev = new StatusEffectRelayedEvent<T>(args);
         foreach (var activeEffect in entity.Comp.ActiveStatusEffects?.ContainedEntities ?? [])

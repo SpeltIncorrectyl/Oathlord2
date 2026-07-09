@@ -17,6 +17,7 @@ public sealed partial class ParryCombatStatusEffectsSystem : EntitySystem
         // got to do this weird stuff
         var ev = args.Args;
         ev.Cancelled = true;
+        ev.Message = Loc.GetString(entity.Comp.Message);
         args.Args = ev;
     }
 }

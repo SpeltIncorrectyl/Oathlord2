@@ -13,3 +13,4 @@
   name: staggered
   components:
   - type: BlockMeleeAttackStatusEffect
+    message: status-effect-staggered-hit-fail

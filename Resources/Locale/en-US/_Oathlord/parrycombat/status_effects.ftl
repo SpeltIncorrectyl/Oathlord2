@@ -1,0 +1,1 @@
+status-effect-staggered-hit-fail = You can't attack while staggered!

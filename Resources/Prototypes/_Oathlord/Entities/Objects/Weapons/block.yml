@@ -3,3 +3,10 @@
   abstract: true
   components:
   - type: BlockableWeapon
+    effectsOnBlockForAttacker:
+    - !type:ModifyStatusEffect
+      effectProto: OathStatusEffectSlowdown
+      time: 2
+    - !type:ModifyStatusEffect
+      effectProto: OathStatusEffectStagger
+      time: 2
